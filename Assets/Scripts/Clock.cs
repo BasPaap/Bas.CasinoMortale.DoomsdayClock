@@ -29,7 +29,7 @@ public class Clock : MonoBehaviour
         var timeToDisplay = TimeSpan.FromSeconds(numSecondsRemaining);
 
         string timeFormat = "h':'mm':'ss";
-        string fractionFormat = "'.'fff";
+        string fractionFormat = "'.'ff";
     
         if (numSecondsRemaining < audioStartTime && !audioPlayer.isPlaying)
         {
