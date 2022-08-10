@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Clock : MonoBehaviour
 {
     [SerializeField] private float numSecondsAtStart;
@@ -13,15 +14,20 @@ public class Clock : MonoBehaviour
     [SerializeField] private AudioSource audioPlayer;
     [SerializeField] private float audioStartTime = 7 + 1.2f;
     [SerializeField] private float gameOverStartTime = 0;
+    [SerializeField] private float pitchIncreaseTime = 17;
+    [SerializeField] private float doubleOhSevenDisplayTime = 2f;
 
     private float startTime;
+    private int lastBeepSecond;
+    private AudioSource audioSource;
 
-    private void Start()
+    private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         startTime = Time.time;
         gameOverText.color = Color.clear;
     }
-
+    
     private void Update()
     {
         var numElapsedSeconds = Time.time - startTime;
@@ -31,6 +37,15 @@ public class Clock : MonoBehaviour
         string timeFormat = "h':'mm':'ss";
         string fractionFormat = "'.'ff";
     
+        if (numSecondsRemaining > 7 && (int)numSecondsRemaining != lastBeepSecond)
+        {
+            lastBeepSecond = (int)numSecondsRemaining;
+            if (numSecondsRemaining < pitchIncreaseTime)
+            {
+                audioSource.pitch = 1 +  (pitchIncreaseTime - numSecondsRemaining) / pitchIncreaseTime;
+            }
+            audioSource.Play();
+        }
         if (numSecondsRemaining < audioStartTime && !audioPlayer.isPlaying)
         {
             audioPlayer.Play();
@@ -41,11 +56,11 @@ public class Clock : MonoBehaviour
             gameOverText.color = Color.red;
         }
 
-        if (numSecondsRemaining > 5f && numSecondsRemaining < 7)
+        if (numSecondsRemaining > doubleOhSevenDisplayTime && numSecondsRemaining < 7)
         {
             timeToDisplay = TimeSpan.FromSeconds(7);
         }
-        if (numSecondsRemaining < 5f)
+        if (numSecondsRemaining < doubleOhSevenDisplayTime)
         {
             timeText.text = "0:07";
             fractionText.text = string.Empty;
