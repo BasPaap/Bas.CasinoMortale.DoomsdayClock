@@ -1147,7 +1147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f0726847a2ef74a83d1906505d19da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSecondsAtStart: 25
+  numSecondsAtStart: 11
   timeText: {fileID: 1870177764}
   fractionText: {fileID: 89817840}
   gameOverText: {fileID: 1626770197}
@@ -1155,6 +1155,7 @@ MonoBehaviour:
   audioStartTime: 8.2
   gameOverStartTime: -2
   pitchIncreaseTime: 12
+  doubleOhSevenDisplayTime: 6
 --- !u!82 &1954031247
 AudioSource:
   m_ObjectHideFlags: 0
