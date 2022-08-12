@@ -35,15 +35,26 @@ public class Clock : MonoBehaviour
     private bool hasBloodDripPlayed = false;
     private bool hasMusicPlayed = false;
     private RawImage bloodDripImage;
+    public RawImage cardsImage;
 
     private void Awake()
     {
         beepAudioSource = GetComponent<AudioSource>();
         startTime = Time.time;
+
+        gameOverText.DOKill();
         gameOverText.DOFade(0, 0);
+
+        titleText.DOKill();
         titleText.DOFade(0, 0);
+
         doubleOhSevenText.color = Color.clear;
         bloodDripImage = bloodDrip.GetComponent<RawImage>();
+        
+        cardsImage = cards.GetComponent<RawImage>();
+        cardsImage.DOKill();
+        cardsImage.DOFade(0, 0);
+        
         cards.Prepare();
 
         ClearRenderTexture(bloodDrip.targetTexture);
@@ -125,8 +136,15 @@ public class Clock : MonoBehaviour
 
     private void PlayCards()
     {
+        cardsImage.DOKill();
+        cardsImage.DOFade(1, 2);
         cards.Play();
+        
+        bloodDrip.DOKill();
         bloodDripImage.DOFade(0, 5);
+
+        titleText.DOKill();
+        titleText.DOFade(0, 2);
     }
 
     private void PlayBloodDrip()
@@ -159,6 +177,7 @@ public class Clock : MonoBehaviour
 
     private void ShowGameOverText()
     {
+        gameOverText.DOKill();
         gameOverText.DOFade(1, 0);
     }
 
