@@ -588,7 +588,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1219193698}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -978,8 +978,8 @@ RectTransform:
   m_Children:
   - {fileID: 676518575}
   - {fileID: 1954031245}
-  - {fileID: 1890503869}
   - {fileID: 961375655}
+  - {fileID: 1890503869}
   - {fileID: 2007463734}
   - {fileID: 1626770196}
   m_Father: {fileID: 0}
@@ -1373,7 +1373,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1219193698}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1546,6 +1546,7 @@ MonoBehaviour:
   bloodDripDisplayTime: -4
   titleDisplayTime: -3
   cardsDisplayTime: -15
+  cardsImage: {fileID: 0}
 --- !u!82 &1954031247
 AudioSource:
   m_ObjectHideFlags: 0
