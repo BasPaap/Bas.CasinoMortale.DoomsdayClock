@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Video;
 
 [RequireComponent(typeof(AudioSource))]
 public class Clock : MonoBehaviour
@@ -13,23 +14,39 @@ public class Clock : MonoBehaviour
     [SerializeField] private TextMeshProUGUI fractionText;
     [SerializeField] private TextMeshProUGUI doubleOhSevenText;
     [SerializeField] private TextMeshProUGUI gameOverText;
+    [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private AudioSource audioPlayer;
+    [SerializeField] private VideoPlayer bloodDrip;
     [SerializeField] private float audioStartTime = 7 + 1.2f;
     [SerializeField] private float gameOverStartTime = 0;
     [SerializeField] private float pitchIncreaseTime = 17;
     [SerializeField] private float doubleOhSevenDisplayTime = 2f;
+    [SerializeField] private float bloodDripDisplayTime;
+    [SerializeField] private float titleDisplayTime;
 
     private float startTime;
     private int lastBeepSecond;
     private AudioSource audioSource;
     private bool isTimeVisible = true;
+    private bool hasBloodDripPlayed= false;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         startTime = Time.time;
-        gameOverText.color = Color.clear;
+        gameOverText.DOFade(0, 0);
+        titleText.DOFade(0, 0);
         doubleOhSevenText.color = Color.clear;
+
+        ClearRenderTexture(bloodDrip.targetTexture);
+    }
+
+    private void ClearRenderTexture(RenderTexture renderTexture)
+    {
+        RenderTexture rt = UnityEngine.RenderTexture.active;
+        UnityEngine.RenderTexture.active = renderTexture;
+        GL.Clear(true, true, Color.clear);
+        UnityEngine.RenderTexture.active = rt;
     }
 
     private void Update()
@@ -55,9 +72,9 @@ public class Clock : MonoBehaviour
             audioPlayer.Play();
         }
 
-        if (numSecondsRemaining < gameOverStartTime && gameOverText.color == Color.clear)
+        if (numSecondsRemaining < gameOverStartTime && gameOverText.color.a == 0)
         {
-            gameOverText.color = Color.red;
+            gameOverText.DOFade(1, 0);
         }
 
         if (numSecondsRemaining > doubleOhSevenDisplayTime && numSecondsRemaining < 7)
@@ -85,6 +102,18 @@ public class Clock : MonoBehaviour
         {
             timeText.text = timeToDisplay.ToString(timeFormat);
             fractionText.text = timeToDisplay.ToString(fractionFormat);
+        }
+
+        if (numSecondsRemaining < titleDisplayTime && titleText.color.a == 0)
+        {
+            titleText.DOFade(1, 0);
+            doubleOhSevenText.DOFade(0, 0);
+        }
+
+        if (numSecondsRemaining < bloodDripDisplayTime && !bloodDrip.isPlaying && !hasBloodDripPlayed)
+        {
+            hasBloodDripPlayed = true;
+            bloodDrip.Play();
         }
     }
 }
