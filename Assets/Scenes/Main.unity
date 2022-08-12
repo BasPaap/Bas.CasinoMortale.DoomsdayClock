@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 803747282}
   - component: {fileID: 803747281}
   m_Layer: 0
-  m_Name: Audio Player
+  m_Name: Music Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1536,7 +1536,7 @@ MonoBehaviour:
   doubleOhSevenText: {fileID: 1205516278}
   gameOverText: {fileID: 1626770197}
   titleText: {fileID: 1890503870}
-  audioPlayer: {fileID: 803747281}
+  musicAudioSource: {fileID: 803747281}
   bloodDrip: {fileID: 2007463735}
   cards: {fileID: 961375656}
   audioStartTime: 8.2

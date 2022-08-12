@@ -6,6 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Video;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(AudioSource))]
 public class Clock : MonoBehaviour
@@ -16,7 +17,7 @@ public class Clock : MonoBehaviour
     [SerializeField] private TextMeshProUGUI doubleOhSevenText;
     [SerializeField] private TextMeshProUGUI gameOverText;
     [SerializeField] private TextMeshProUGUI titleText;
-    [SerializeField] private AudioSource audioPlayer;
+    [SerializeField] private AudioSource musicAudioSource;
     [SerializeField] private VideoPlayer bloodDrip;
     [SerializeField] private VideoPlayer cards;
     [SerializeField] private float audioStartTime = 7 + 1.2f;
@@ -29,21 +30,22 @@ public class Clock : MonoBehaviour
 
     private float startTime;
     private int lastBeepSecond;
-    private AudioSource audioSource;
+    private AudioSource beepAudioSource;
     private bool isTimeVisible = true;
-    private bool hasBloodDripPlayed= false;
+    private bool hasBloodDripPlayed = false;
+    private bool hasMusicPlayed = false;
     private RawImage bloodDripImage;
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        beepAudioSource = GetComponent<AudioSource>();
         startTime = Time.time;
         gameOverText.DOFade(0, 0);
         titleText.DOFade(0, 0);
         doubleOhSevenText.color = Color.clear;
         bloodDripImage = bloodDrip.GetComponent<RawImage>();
         cards.Prepare();
-        
+
         ClearRenderTexture(bloodDrip.targetTexture);
         ClearRenderTexture(cards.targetTexture);
 
@@ -70,27 +72,24 @@ public class Clock : MonoBehaviour
 
         if (numSecondsRemaining > 7 && (int)numSecondsRemaining != lastBeepSecond)
         {
-            lastBeepSecond = (int)numSecondsRemaining;
-            if (numSecondsRemaining < pitchIncreaseTime)
-            {
-                audioSource.pitch = 1 + (pitchIncreaseTime - numSecondsRemaining) / pitchIncreaseTime;
-            }
-            audioSource.Play();
+            PlayBeep(numSecondsRemaining);
         }
-        if (numSecondsRemaining < audioStartTime && !audioPlayer.isPlaying)
+
+        if (numSecondsRemaining < audioStartTime && !musicAudioSource.isPlaying && !hasMusicPlayed)
         {
-            audioPlayer.Play();
+            PlayMusic();
         }
 
         if (numSecondsRemaining < gameOverStartTime && gameOverText.color.a == 0)
         {
-            gameOverText.DOFade(1, 0);
+            ShowGameOverText();
         }
 
         if (numSecondsRemaining > doubleOhSevenDisplayTime && numSecondsRemaining < 7)
         {
             timeToDisplay = TimeSpan.FromSeconds(7);
         }
+
         if (numSecondsRemaining < doubleOhSevenDisplayTime)
         {
             const float timeFadeDuration = 1.0f;
@@ -100,36 +99,82 @@ public class Clock : MonoBehaviour
 
             if (isTimeVisible)
             {
-                doubleOhSevenText.color = Color.red;
-                timeText.DOKill();
-                timeText.DOFade(0, timeFadeDuration);
-                fractionText.DOKill();
-                fractionText.DOFade(0, timeFadeDuration);
-                isTimeVisible = false;
+                FadeTimeOut(timeFadeDuration);
             }
         }
         else
         {
-            timeText.text = timeToDisplay.ToString(timeFormat);
-            fractionText.text = timeToDisplay.ToString(fractionFormat);
+            UpdateText(timeToDisplay, timeFormat, fractionFormat);
         }
 
         if (numSecondsRemaining < titleDisplayTime && titleText.color.a == 0)
         {
-            titleText.DOFade(1, 0);
-            doubleOhSevenText.DOFade(0, 0);
+            ShowTitleText();
         }
 
         if (numSecondsRemaining < bloodDripDisplayTime && !bloodDrip.isPlaying && !hasBloodDripPlayed)
         {
-            hasBloodDripPlayed = true;
-            bloodDrip.Play();
+            PlayBloodDrip();
         }
 
         if (numSecondsRemaining < cardsDisplayTime && !cards.isPlaying)
         {
-            cards.Play();
-            bloodDripImage.DOFade(0, 5);
+            PlayCards();
         }
+    }
+
+    private void PlayCards()
+    {
+        cards.Play();
+        bloodDripImage.DOFade(0, 5);
+    }
+
+    private void PlayBloodDrip()
+    {
+        hasBloodDripPlayed = true;
+        bloodDrip.Play();
+    }
+
+    private void ShowTitleText()
+    {
+        titleText.DOFade(1, 0);
+        doubleOhSevenText.DOFade(0, 0);
+    }
+
+    private void UpdateText(TimeSpan timeToDisplay, string timeFormat, string fractionFormat)
+    {
+        timeText.text = timeToDisplay.ToString(timeFormat);
+        fractionText.text = timeToDisplay.ToString(fractionFormat);
+    }
+
+    private void FadeTimeOut(float timeFadeDuration)
+    {
+        doubleOhSevenText.color = Color.red;
+        timeText.DOKill();
+        timeText.DOFade(0, timeFadeDuration);
+        fractionText.DOKill();
+        fractionText.DOFade(0, timeFadeDuration);
+        isTimeVisible = false;
+    }
+
+    private void ShowGameOverText()
+    {
+        gameOverText.DOFade(1, 0);
+    }
+
+    private void PlayMusic()
+    {
+        musicAudioSource.Play();
+        hasMusicPlayed = true;
+    }
+
+    private void PlayBeep(float numSecondsRemaining)
+    {
+        lastBeepSecond = (int)numSecondsRemaining;
+        if (numSecondsRemaining < pitchIncreaseTime)
+        {
+            beepAudioSource.pitch = 1 + (pitchIncreaseTime - numSecondsRemaining) / pitchIncreaseTime;
+        }
+        beepAudioSource.Play();
     }
 }
