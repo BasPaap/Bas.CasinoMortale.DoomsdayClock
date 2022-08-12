@@ -35,7 +35,7 @@ public class Clock : MonoBehaviour
     private bool hasBloodDripPlayed = false;
     private bool hasMusicPlayed = false;
     private RawImage bloodDripImage;
-    public RawImage cardsImage;
+    private RawImage cardsImage;
 
     private void Awake()
     {
@@ -118,7 +118,7 @@ public class Clock : MonoBehaviour
             UpdateText(timeToDisplay, timeFormat, fractionFormat);
         }
 
-        if (numSecondsRemaining < titleDisplayTime && titleText.color.a == 0)
+        if (numSecondsRemaining < titleDisplayTime && titleText.color.a == 0 && !hasBloodDripPlayed)
         {
             ShowTitleText();
         }

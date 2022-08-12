@@ -1545,8 +1545,7 @@ MonoBehaviour:
   doubleOhSevenDisplayTime: 3
   bloodDripDisplayTime: -4
   titleDisplayTime: -3
-  cardsDisplayTime: -15
-  cardsImage: {fileID: 0}
+  cardsDisplayTime: -10
 --- !u!82 &1954031247
 AudioSource:
   m_ObjectHideFlags: 0
