@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Video;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class Clock : MonoBehaviour
@@ -17,18 +18,21 @@ public class Clock : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private AudioSource audioPlayer;
     [SerializeField] private VideoPlayer bloodDrip;
+    [SerializeField] private VideoPlayer cards;
     [SerializeField] private float audioStartTime = 7 + 1.2f;
     [SerializeField] private float gameOverStartTime = 0;
     [SerializeField] private float pitchIncreaseTime = 17;
     [SerializeField] private float doubleOhSevenDisplayTime = 2f;
     [SerializeField] private float bloodDripDisplayTime;
     [SerializeField] private float titleDisplayTime;
+    [SerializeField] private float cardsDisplayTime = -15;
 
     private float startTime;
     private int lastBeepSecond;
     private AudioSource audioSource;
     private bool isTimeVisible = true;
     private bool hasBloodDripPlayed= false;
+    private RawImage bloodDripImage;
 
     private void Awake()
     {
@@ -37,8 +41,14 @@ public class Clock : MonoBehaviour
         gameOverText.DOFade(0, 0);
         titleText.DOFade(0, 0);
         doubleOhSevenText.color = Color.clear;
-
+        bloodDripImage = bloodDrip.GetComponent<RawImage>();
+        cards.Prepare();
+        
         ClearRenderTexture(bloodDrip.targetTexture);
+        ClearRenderTexture(cards.targetTexture);
+
+        gameOverText.outlineWidth = 0.1f;
+        gameOverText.outlineColor = Color.black;
     }
 
     private void ClearRenderTexture(RenderTexture renderTexture)
@@ -114,6 +124,12 @@ public class Clock : MonoBehaviour
         {
             hasBloodDripPlayed = true;
             bloodDrip.Play();
+        }
+
+        if (numSecondsRemaining < cardsDisplayTime && !cards.isPlaying)
+        {
+            cards.Play();
+            bloodDripImage.DOFade(0, 5);
         }
     }
 }
